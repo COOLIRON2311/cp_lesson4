@@ -8,7 +8,7 @@ Example:
 
 4*x^3, y // => 0
 
-4*x^3-x^2, x //=> 12*x^2 - 2*x 
+4*x^3-x^2, x //=> 12*x^2 - 2*x
 ```
 Allowed operations are +, -,* and ^.
 
