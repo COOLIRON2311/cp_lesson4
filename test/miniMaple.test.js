@@ -98,6 +98,10 @@ describe('Add class tests', () => {
         expect(a.sub(2)).toEqual(new Add(1, -2));
     });
 
+    test('operator chain', () => {
+        expect(x.add(1).sub(2)).toEqual(new Add(new Add(x, 1), -2));
+    })
+
     test('diff method', () => {
         expect(new Add(1, 2).diff()).toEqual(0);
         expect(new Add(2, x).diff()).toEqual(1);
@@ -111,5 +115,71 @@ describe('Add class tests', () => {
         expect(mm.toString(new Add(x, -2))).toEqual('x - 2');
         expect(mm.toString(new Add(new Add(x.pow(2), x), -2))).toEqual('x^2 + x - 2');
         expect(mm.toString(new Add(new Add(x.pow(2), x), -2), true)).toEqual('Add(Add(x^2, x), -2)');
+    });
+});
+
+describe('Polynomials parsing tests', () => {
+    const x = new Term('x');
+    test('empty string', () => {
+        expect(mm.parsePoly('')).toBeNull();
+    });
+
+    test('single integer term', () => {
+        expect(mm.parsePoly('12')).toEqual(12);
+        expect(mm.parsePoly('-12')).toEqual(-12);
+    });
+
+    test('single symbolic term', () => {
+        expect(mm.parsePoly('x')).toEqual(x);
+        expect(mm.parsePoly('-x')).toEqual(x.neg());
+    });
+
+    test('single symbolic term with coefficient', () => {
+        expect(mm.parsePoly('3*x')).toEqual(x.mul(3));
+        expect(mm.parsePoly('-3*x')).toEqual(x.mul(-3));
+    });
+
+    test('single symbolic term with exponent', () => {
+        expect(mm.parsePoly('x^2')).toEqual(x.pow(2));
+        expect(mm.parsePoly('-x^2')).toEqual(x.neg().pow(2));
+    });
+
+    test('two term polynomial 1', () => {
+        expect(mm.parsePoly('x^2 + 1')).toEqual(x.pow(2).add(1));
+        expect(mm.parsePoly('x^2 - 1')).toEqual(x.pow(2).sub(1));
+    });
+
+    test('two term polynomial 2', () => {
+        expect(mm.parsePoly('3*x^2 + 2*x')).toEqual(x.mul(3).pow(2).add(x.mul(2)));
+        expect(mm.parsePoly('3*x^2 - 2*x')).toEqual(x.mul(3).pow(2).sub(x.mul(2)));
+    });
+
+    test('three term polynomial', () => {
+        expect(mm.parsePoly('3*x^2 + 2*x - 2')).toEqual(x.mul(3).pow(2).add(x.mul(2)).sub(2));
+        expect(mm.parsePoly('3*x^2 - 2*x + 2')).toEqual(x.mul(3).pow(2).sub(x.mul(2)).add(2));
+    });
+
+    test('out of order terms', () => {
+        expect(mm.parsePoly('12 + 3*x^2 - 2*x')).toEqual(new Add(12, x.mul(3).pow(2)).sub(x.mul(2)));
+    });
+});
+
+describe('Differentiation tests', () => {
+    test('polynomial 1', () => {
+        expect(mm.toString(mm.parsePoly('4*x^3').diff('x'))).toEqual('12*x^2');
+    });
+
+    test('polynomial 2', () => {
+        expect(mm.toString(mm.parsePoly('4*x^3').diff('y'))).toEqual('0');
+    });
+
+    test('polynomial 3', () => {
+        expect(mm.toString(mm.parsePoly('4*x^3 - x^2').diff('x'))).toEqual('12*x^2 - 2*x');
+    });
+
+    test('two variables function', () => {
+        var p = mm.parsePoly('4*x^3 + 3*y');
+        expect(mm.toString(p.diff('x'))).toEqual('12*x^2');
+        expect(mm.toString(p.diff('y'))).toEqual('3')
     });
 });
