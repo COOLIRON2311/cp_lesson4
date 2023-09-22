@@ -57,7 +57,59 @@ describe('Term class tests', () => {
     });
 
     test('diff method', () => {
-        const x = new Term('x', 4, 3);
-        expect(x.diff()).toEqual(new Term('x', 12, 2));
+        const x = new Term('x');
+        expect(x.diff()).toEqual(1);
+        expect(x.mul(2).diff()).toEqual(2);
+        expect(x.pow(2).diff()).toEqual(new Term('x', 2));
+        expect(x.pow(3).diff()).toEqual(new Term('x', 3, 2));
+        expect(x.mul(4).pow(3).diff()).toEqual(new Term('x', 12, 2));
     })
+});
+
+describe('Add class tests', () => {
+    const x = new Term('x');
+    test('constructor', () => {
+        const a = new Add(1, 2);
+        expect([a.lhs, a.rhs]).toEqual([1, 2]);
+    });
+
+    test('constructor patch', () => {
+        const a = new Add(1);
+        expect([a.lhs, a.rhs]).toEqual([1, null]);
+    });
+
+    test('add operator', () => {
+        const a = new Add(x.pow(2), x);
+        expect(a.add(2)).toEqual(new Add(new Add(x.pow(2), x), 2));
+    });
+
+    test('add operator patch', () => {
+        const a = new Add(1);
+        expect(a.add(2)).toEqual(new Add(1, 2));
+    });
+
+    test('sub operator', () => {
+        const a = new Add(x.pow(2), x);
+        expect(a.sub(2)).toEqual(new Add(new Add(x.pow(2), x), -2));
+    });
+
+    test('sub operator patch', () => {
+        const a = new Add(1);
+        expect(a.sub(2)).toEqual(new Add(1, -2));
+    });
+
+    test('diff method', () => {
+        expect(new Add(1, 2).diff()).toEqual(0);
+        expect(new Add(2, x).diff()).toEqual(1);
+        expect(new Add(x, 2).diff()).toEqual(1);
+        expect(new Add(x, x).diff()).toEqual(2);
+        expect(new Add(x.pow(2), x).diff()).toEqual(new Add(x.mul(2), 1));
+    });
+
+    test('toString function', () => {
+        expect(mm.toString(new Add(x, 2))).toEqual('x + 2');
+        expect(mm.toString(new Add(x, -2))).toEqual('x - 2');
+        expect(mm.toString(new Add(new Add(x.pow(2), x), -2))).toEqual('x^2 + x - 2');
+        expect(mm.toString(new Add(new Add(x.pow(2), x), -2), true)).toEqual('Add(Add(x^2, x), -2)');
+    });
 });
