@@ -47,7 +47,10 @@ class Term {
         return n;
     }
     diff() {
-        return MiniMaple.diff(this);
+        if (this.p > 1)
+            return new Term(this.s, this.c * this.p, this.p - 1);
+        else
+            return this.c * this.p;
     }
 }
 
@@ -56,6 +59,31 @@ class Add {
         this.lhs = lhs;
         this.rhs = rhs;
     }
+
+    add(other) {
+        if (this.rhs == null) // patch for single term polynomials
+            return new Add(this.lhs, other);
+        return new Add(this, other);
+    }
+
+    sub(other) {
+        if (this.rhs == null) // patch for single term polynomials
+            return new Add(this.lhs, Neg(other));
+        return new Add(this, Neg(other));
+    }
+
+    diff() {
+        let lhs = MiniMaple.diff(this.lhs);
+        let rhs = MiniMaple.diff(this.rhs);
+        if (Number.isInteger(lhs) && Number.isInteger(rhs))
+            return lhs + rhs;
+        if (Eq(lhs, 0))
+            return rhs;
+        else if (Eq(rhs, 0))
+            return lhs;
+        else
+            return new Add(lhs, rhs);
+    }
 }
 
 class MiniMaple {
@@ -63,7 +91,7 @@ class MiniMaple {
         if (Number.isInteger(exp))
             return 0;
         else if (exp instanceof Term)
-            return new Term(exp.s, exp.c * exp.p, exp.p - 1);
+            return exp.diff();
         else if (exp instanceof Add)
             return exp.diff();
         else
