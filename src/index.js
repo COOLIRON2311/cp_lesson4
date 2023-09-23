@@ -1,10 +1,10 @@
-document.addEventListener('DOMContentLoaded',setup)
+document.addEventListener('DOMContentLoaded', setup)
 
 function setup() {
     document.getElementById('demoButton').onclick = addSomething;
 }
 
-function addSomething(){
+function addSomething() {
     const someDummyDiv = document.createElement('div');
     someDummyDiv.classList.add('generated');
     const count = document.getElementsByClassName('generated').length;

@@ -30,6 +30,9 @@ class Term {
     copy() {
         return new Term(this.s, this.c, this.p);
     }
+    neg() {
+        return new Term(this.s, -this.c, this.p);
+    }
     add(other) {
         return new Add(this.copy(), other);
     }
@@ -46,7 +49,9 @@ class Term {
         n.p *= other;
         return n;
     }
-    diff() {
+    diff(sym = 'x') {
+        if (this.s != sym)
+            return 0;
         if (this.p > 1)
             return new Term(this.s, this.c * this.p, this.p - 1);
         else
@@ -72,9 +77,9 @@ class Add {
         return new Add(this, Neg(other));
     }
 
-    diff() {
-        let lhs = MiniMaple.diff(this.lhs);
-        let rhs = MiniMaple.diff(this.rhs);
+    diff(sym = 'x') {
+        let lhs = MiniMaple.diff(this.lhs, sym);
+        let rhs = MiniMaple.diff(this.rhs, sym);
         if (Number.isInteger(lhs) && Number.isInteger(rhs))
             return lhs + rhs;
         if (Eq(lhs, 0))
@@ -87,15 +92,116 @@ class Add {
 }
 
 class MiniMaple {
-    static diff(exp) {
+    /**
+     *
+     * @param {string} exp
+     * @param {string} sym
+     * @returns
+     */
+    static diff(exp, sym = 'x') {
         if (Number.isInteger(exp))
             return 0;
         else if (exp instanceof Term)
-            return exp.diff();
+            return exp.diff(sym);
         else if (exp instanceof Add)
-            return exp.diff();
+            return exp.diff(sym);
         else
             throw new Error(`invalid argument '${exp}'`)
+    }
+    /**
+     *
+     * @param {string} exp
+     * @param {string} sym
+     * @returns {Add|Term}
+     */
+    static parsePoly(exp, sym = 'x') {
+        let root = null;
+        const matches = exp.replace(/\s/g, '').matchAll(/([+-]?[^-+]+)/g);
+        for (const match of matches) {
+            let lex = match[0]; // lexeme
+            if ((/[a-z]/).test(lex)) // symbolic expression
+            {   // sign coefficient * symbol ^ power
+                let sign = 1;
+                let coefficient = 0;
+                let has_coefficient = true;
+                let symbol = '';
+                let power = 0;
+                let has_power = true;
+
+                // sign
+                if (lex.at(0) === '+')
+                    lex = lex.substring(1);
+                else if (lex.at(0) === '-') {
+                    sign = -1;
+                    lex = lex.substring(1);
+                }
+
+                // coefficient
+                while (/\d/.test(lex.at(0))) {
+                    coefficient = coefficient * 10 + Number.parseInt(lex.at(0));
+                    lex = lex.substring(1);
+                }
+
+                // mul operator
+                if (lex.at(0) === '*')
+                    lex = lex.substring(1);
+                else
+                    has_coefficient = false;
+
+                // symbol
+                while (lex != '' && /[a-z]/.test(lex.at(0))) {
+                    symbol += lex.at(0);
+                    lex = lex.substring(1);
+                }
+
+                // exponentiation operator
+                if (lex.at(0) === '^')
+                    lex = lex.substring(1);
+                else
+                    has_power = false;
+
+                // power
+                while (/\d/.test(lex.at(0))) {
+                    power = power * 10 + Number.parseInt(lex.at(0));
+                    lex = lex.substring(1);
+                }
+
+                let term = new Term(symbol).mul(has_coefficient ? sign * coefficient : sign).pow(has_power ? power : 1);
+
+                if (root != null)
+                    root = root.add(term);
+                else
+                    root = term;
+
+            }
+            else // integral expression
+            {  // sign number
+                let sign = 1;
+                let number = 0;
+
+                if (lex.at(0) === '+')
+                    lex = lex.substring(1);
+                else if (lex.at(0) === '-') {
+                    sign = -1;
+                    lex = lex.substring(1);
+                }
+
+                // number
+                while (lex != '' && /\d/.test(lex.at(0))) {
+                    number = number * 10 + Number.parseInt(lex.at(0));
+                    lex = lex.substring(1);
+                }
+
+                if (root != null)
+                    root = root.add(sign * number);
+                else
+                    root = new Add(sign * number);
+            }
+            // console.log(match[0]);
+        }
+        if (root instanceof Add && root.rhs === null) // single integer term
+            return root.lhs;
+        return root;
     }
 
     /**
@@ -108,7 +214,7 @@ class MiniMaple {
         if (Number.isInteger(exp))
             return `${exp}`;
         else if (exp instanceof Term) {
-            let r = '';
+            let r = new String();
             if (exp.c != 1)
                 r += `${exp.c}*`;
             r += exp.s;
