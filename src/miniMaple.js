@@ -234,5 +234,5 @@ class MiniMaple {
 }
 
 export { Add }
-export { Term as Sym }
+export { Term }
 export { MiniMaple }

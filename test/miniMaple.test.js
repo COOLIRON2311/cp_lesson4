@@ -1,4 +1,4 @@
-import { Add, MiniMaple, Sym as Term } from "../src/miniMaple";
+import { Add, MiniMaple, Term } from "../src/miniMaple";
 
 const mm = MiniMaple;
 
