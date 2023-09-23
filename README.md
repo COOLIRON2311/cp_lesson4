@@ -1,3 +1,4 @@
+![](https://img.shields.io/badge/Coverage-95%25-83A603.svg?prefix=$coverage$)
 ## MiniMaple
 
 Write the symbolic diff function
