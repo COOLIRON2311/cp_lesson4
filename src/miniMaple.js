@@ -50,7 +50,7 @@ class Term {
         return n;
     }
     diff(sym = 'x') {
-        if (this.s != sym)
+        if (this.s !== sym)
             return 0;
         if (this.p > 1)
             return new Term(this.s, this.c * this.p, this.p - 1);
@@ -66,13 +66,13 @@ class Add {
     }
 
     add(other) {
-        if (this.rhs == null) // patch for single term polynomials
+        if (this.rhs === null) // patch for single term polynomials
             return new Add(this.lhs, other);
         return new Add(this, other);
     }
 
     sub(other) {
-        if (this.rhs == null) // patch for single term polynomials
+        if (this.rhs === null) // patch for single term polynomials
             return new Add(this.lhs, Neg(other));
         return new Add(this, Neg(other));
     }
@@ -149,7 +149,7 @@ class MiniMaple {
                     has_coefficient = false;
 
                 // symbol
-                while (lex != '' && /[a-z]/.test(lex.at(0))) {
+                while (lex !== '' && /[a-z]/.test(lex.at(0))) {
                     symbol += lex.at(0);
                     lex = lex.substring(1);
                 }
@@ -168,7 +168,7 @@ class MiniMaple {
 
                 let term = new Term(symbol).mul(has_coefficient ? sign * coefficient : sign).pow(has_power ? power : 1);
 
-                if (root != null)
+                if (root !== null)
                     root = root.add(term);
                 else
                     root = term;
@@ -187,12 +187,12 @@ class MiniMaple {
                 }
 
                 // number
-                while (lex != '' && /\d/.test(lex.at(0))) {
+                while (lex !== '' && /\d/.test(lex.at(0))) {
                     number = number * 10 + Number.parseInt(lex.at(0));
                     lex = lex.substring(1);
                 }
 
-                if (root != null)
+                if (root !== null)
                     root = root.add(sign * number);
                 else
                     root = new Add(sign * number);
@@ -215,10 +215,10 @@ class MiniMaple {
             return `${exp}`;
         else if (exp instanceof Term) {
             let r = new String();
-            if (exp.c != 1)
+            if (exp.c !== 1)
                 r += `${exp.c}*`;
             r += exp.s;
-            if (exp.p != 1)
+            if (exp.p !== 1)
                 r += `^${exp.p}`;
             return r;
         }

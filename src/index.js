@@ -9,9 +9,14 @@ function setup() {
 function ComputeDerivative() {
     const poly = document.getElementById('poly').value;
     const sym = document.getElementById('sym').value;
+    if (sym === '')
+    {
+        alert(`Invalid input: '${sym}'`);
+        return;
+    }
     const out = document.getElementById('output');
     const p = mm.parsePoly(poly);
-    if (p == null) {
+    if (p === null) {
         alert(`Invalid input: '${poly}'`);
         return;
     }
