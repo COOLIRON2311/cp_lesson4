@@ -27,28 +27,35 @@ class Term {
         this.c = c;
         this.p = p;
     }
+
     copy() {
         return new Term(this.s, this.c, this.p);
     }
+
     neg() {
         return new Term(this.s, -this.c, this.p);
     }
+
     add(other) {
         return new Add(this.copy(), other);
     }
+
     sub(other) {
         return new Add(this.copy(), Neg(other));
     }
+
     mul(other) {
-        let n = this.copy();
+        const n = this.copy();
         n.c *= other;
         return n;
     }
+
     pow(other) {
-        let n = this.copy();
+        const n = this.copy();
         n.p *= other;
         return n;
     }
+
     diff(sym = 'x') {
         if (this.s !== sym)
             return 0;
@@ -78,8 +85,8 @@ class Add {
     }
 
     diff(sym = 'x') {
-        let lhs = MiniMaple.diff(this.lhs, sym);
-        let rhs = MiniMaple.diff(this.rhs, sym);
+        const lhs = MiniMaple.diff(this.lhs, sym);
+        const rhs = MiniMaple.diff(this.rhs, sym);
         if (Number.isInteger(lhs) && Number.isInteger(rhs))
             return lhs + rhs;
         if (Eq(lhs, 0))
@@ -106,8 +113,9 @@ class MiniMaple {
         else if (exp instanceof Add)
             return exp.diff(sym);
         else
-            throw new Error(`invalid argument '${exp}'`)
+            throw new Error(`invalid argument '${exp}'`);
     }
+
     /**
      *
      * @param {string} exp
@@ -119,8 +127,8 @@ class MiniMaple {
         const matches = exp.replace(/\s/g, '').matchAll(/([+-]?[^-+]+)/g);
         for (const match of matches) {
             let lex = match[0]; // lexeme
-            if ((/[a-z]/).test(lex)) // symbolic expression
-            {   // sign coefficient * symbol ^ power
+            if ((/[a-z]/).test(lex)) { // symbolic expression
+                // sign coefficient * symbol ^ power
                 let sign = 1;
                 let coefficient = 0;
                 let has_coefficient = true;
@@ -166,16 +174,14 @@ class MiniMaple {
                     lex = lex.substring(1);
                 }
 
-                let term = new Term(symbol).mul(has_coefficient ? sign * coefficient : sign).pow(has_power ? power : 1);
+                const term = new Term(symbol).mul(has_coefficient ? sign * coefficient : sign).pow(has_power ? power : 1);
 
                 if (root !== null)
                     root = root.add(term);
                 else
                     root = term;
-
-            }
-            else // integral expression
-            {  // sign number
+            } else { // integral expression
+                // sign number
                 let sign = 1;
                 let number = 0;
 
@@ -214,15 +220,14 @@ class MiniMaple {
         if (Number.isInteger(exp))
             return `${exp}`;
         else if (exp instanceof Term) {
-            let r = new String();
+            let r = '';
             if (exp.c !== 1)
                 r += `${exp.c}*`;
             r += exp.s;
             if (exp.p !== 1)
                 r += `^${exp.p}`;
             return r;
-        }
-        else if (exp instanceof Add) {
+        } else if (exp instanceof Add) {
             if (debug)
                 return `Add(${this.toString(exp.lhs, debug)}, ${this.toString(exp.rhs, debug)})`;
             if (isNeg(exp.rhs))
@@ -233,6 +238,6 @@ class MiniMaple {
     }
 }
 
-export { Add }
-export { Term }
-export { MiniMaple }
+export { Add };
+export { Term };
+export { MiniMaple };

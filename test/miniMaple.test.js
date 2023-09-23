@@ -1,4 +1,4 @@
-import { Add, MiniMaple, Term } from "../src/miniMaple";
+import { Add, MiniMaple, Term } from '../src/miniMaple';
 
 const mm = MiniMaple;
 
@@ -63,7 +63,7 @@ describe('Term class tests', () => {
         expect(x.pow(2).diff()).toEqual(new Term('x', 2));
         expect(x.pow(3).diff()).toEqual(new Term('x', 3, 2));
         expect(x.mul(4).pow(3).diff()).toEqual(new Term('x', 12, 2));
-    })
+    });
 });
 
 describe('Add class tests', () => {
@@ -100,7 +100,7 @@ describe('Add class tests', () => {
 
     test('operator chain', () => {
         expect(x.add(1).sub(2)).toEqual(new Add(new Add(x, 1), -2));
-    })
+    });
 
     test('diff method', () => {
         expect(new Add(1, 2).diff()).toEqual(0);
@@ -178,8 +178,8 @@ describe('Differentiation tests', () => {
     });
 
     test('two variables function', () => {
-        var p = mm.parsePoly('4*x^3 + 3*y');
+        const p = mm.parsePoly('4*x^3 + 3*y');
         expect(mm.toString(p.diff('x'))).toEqual('12*x^2');
-        expect(mm.toString(p.diff('y'))).toEqual('3')
+        expect(mm.toString(p.diff('y'))).toEqual('3');
     });
 });

@@ -1,6 +1,6 @@
-import { MiniMaple as mm } from "./miniMaple.js";
+import { MiniMaple as mm } from './miniMaple.js';
 
-document.addEventListener('DOMContentLoaded', setup)
+document.addEventListener('DOMContentLoaded', setup);
 
 function setup() {
     document.getElementById('submit').onclick = ComputeDerivative;
@@ -9,8 +9,7 @@ function setup() {
 function ComputeDerivative() {
     const poly = document.getElementById('poly').value;
     const sym = document.getElementById('sym').value;
-    if (sym === '')
-    {
+    if (sym === '') {
         alert(`Invalid input: '${sym}'`);
         return;
     }
