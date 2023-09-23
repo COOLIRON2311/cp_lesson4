@@ -5,17 +5,25 @@
     <title>Lesson 4</title>
     <meta charset="UTF-8" />
     <script src="src/index.js" type="module"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
-<body>
-    <h1>Polynomial differentiation</h1>
-    <div id="container">
-        Compute partial derivative of
-        <p><input type="text" id="poly" value="4*x^3 - x^2 + x - 3" /></p>
-        <p>with respect to</p>
-        <p><input type="text" id="sym" value="x" /></p>
-        <button id="submit">Do it!</button>
-        <p><output id="output"></output></p>
+<body style="background-color: black;">
+    <div class="h-100 d-flex align-items-center justify-content-center text-white">
+        <div id="container" class="text-center mt-5">
+            <h1>Polynomial differentiation</h1>
+            <div style="margin-top: 10%;">
+                <p class="h5">Compute partial derivative of</p>
+                <p><input type="text" id="poly" value="4*x^3 - x^2 + x - 3" class="form-control" /></p>
+                <p class="h5">with respect to</p>
+                <p><input type="text" id="sym" value="x" class="form-control" /></p>
+                <button id="submit" class="btn btn-light">Do it!</button>
+            </div>
+            <div style="margin-top: 10%;">
+                <p><output id="output" class="h5"></output></p>
+            </div>
+        </div>
     </div>
 </body>
 
