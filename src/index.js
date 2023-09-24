@@ -13,11 +13,12 @@ function ComputeDerivative() {
         alert(`Invalid input: '${sym}'`);
         return;
     }
-    const out = document.getElementById('output');
     const p = mm.parsePoly(poly);
     if (p === null) {
         alert(`Invalid input: '${poly}'`);
         return;
     }
-    out.value = mm.toString(p.diff(sym));
+    const out = document.getElementById('output');
+    out.innerHTML = `$$ ${mm.toString(p.diff(sym))} $$`;
+    MathJax.typeset();
 }
