@@ -52,6 +52,7 @@ class Term {
 
     pow(other) {
         const n = this.copy();
+        n.c **= other;
         n.p *= other;
         return n;
     }
@@ -174,7 +175,7 @@ class MiniMaple {
                     lex = lex.substring(1);
                 }
 
-                const term = new Term(symbol).mul(has_coefficient ? sign * coefficient : sign).pow(has_power ? power : 1);
+                const term = new Term(symbol).pow(has_power ? power : 1).mul(has_coefficient ? sign * coefficient : sign);
 
                 if (root !== null)
                     root = root.add(term);

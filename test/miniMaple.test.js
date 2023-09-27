@@ -34,7 +34,7 @@ describe('Term class tests', () => {
 
     test('operator chain', () => {
         let x = new Term('x');
-        x = x.mul(4).pow(3);
+        x = x.pow(3).mul(4);
         expect(x).toEqual(new Term('x', 4, 3));
     });
 
@@ -53,7 +53,7 @@ describe('Term class tests', () => {
         expect(mm.toString(x)).toEqual('x');
         expect(mm.toString(x.pow(2))).toEqual('x^2');
         expect(mm.toString(x.mul(3))).toEqual('3*x');
-        expect(mm.toString(x.mul(3).pow(2))).toEqual('3*x^2');
+        expect(mm.toString(x.pow(2).mul(3))).toEqual('3*x^2');
     });
 
     test('diff method', () => {
@@ -62,7 +62,7 @@ describe('Term class tests', () => {
         expect(x.mul(2).diff()).toEqual(2);
         expect(x.pow(2).diff()).toEqual(new Term('x', 2));
         expect(x.pow(3).diff()).toEqual(new Term('x', 3, 2));
-        expect(x.mul(4).pow(3).diff()).toEqual(new Term('x', 12, 2));
+        expect(x.pow(3).mul(4).diff()).toEqual(new Term('x', 12, 2));
     });
 });
 
@@ -141,7 +141,7 @@ describe('Polynomials parsing tests', () => {
 
     test('single symbolic term with exponent', () => {
         expect(mm.parsePoly('x^2')).toEqual(x.pow(2));
-        expect(mm.parsePoly('-x^2')).toEqual(x.neg().pow(2));
+        expect(mm.parsePoly('-x^2')).toEqual(x.pow(2).neg());
     });
 
     test('two term polynomial 1', () => {
@@ -150,17 +150,17 @@ describe('Polynomials parsing tests', () => {
     });
 
     test('two term polynomial 2', () => {
-        expect(mm.parsePoly('3*x^2 + 2*x')).toEqual(x.mul(3).pow(2).add(x.mul(2)));
-        expect(mm.parsePoly('3*x^2 - 2*x')).toEqual(x.mul(3).pow(2).sub(x.mul(2)));
+        expect(mm.parsePoly('3*x^2 + 2*x')).toEqual(x.pow(2).mul(3).add(x.mul(2)));
+        expect(mm.parsePoly('3*x^2 - 2*x')).toEqual(x.pow(2).mul(3).sub(x.mul(2)));
     });
 
     test('three term polynomial', () => {
-        expect(mm.parsePoly('3*x^2 + 2*x - 2')).toEqual(x.mul(3).pow(2).add(x.mul(2)).sub(2));
-        expect(mm.parsePoly('3*x^2 - 2*x + 2')).toEqual(x.mul(3).pow(2).sub(x.mul(2)).add(2));
+        expect(mm.parsePoly('3*x^2 + 2*x - 2')).toEqual(x.pow(2).mul(3).add(x.mul(2)).sub(2));
+        expect(mm.parsePoly('3*x^2 - 2*x + 2')).toEqual(x.pow(2).mul(3).sub(x.mul(2)).add(2));
     });
 
     test('out of order terms', () => {
-        expect(mm.parsePoly('12 + 3*x^2 - 2*x')).toEqual(new Add(12, x.mul(3).pow(2)).sub(x.mul(2)));
+        expect(mm.parsePoly('12 + 3*x^2 - 2*x')).toEqual(new Add(12, x.pow(2).mul(3)).sub(x.mul(2)));
     });
 });
 
