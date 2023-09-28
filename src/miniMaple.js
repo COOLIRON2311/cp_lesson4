@@ -181,7 +181,7 @@ class MiniMaple {
                     root = root.add(term);
                 else
                     root = term;
-            } else { // integral expression
+            } else { // numeric expression
                 // sign number
                 let sign = 1;
                 let number = 0;
